@@ -259,6 +259,38 @@ def build_notes(ws):
     ws.column_dimensions["A"].width = 84
 
 
+#: Every timestamp baked into the file, pinned. An .xlsx is a zip, and BOTH layers carry a
+#: clock: openpyxl stamps docProps/core.xml, and ZipFile stamps every entry with localtime at
+#: 2-second resolution. Pinning only the first made the file *look* stable when two runs landed
+#: in the same 2-second window and unstable otherwise -- which is the worst kind of flaky.
+FIXED_TIME = _dt.datetime(2026, 9, 21, 0, 0, 0)
+FIXED_ZIP_TIME = (2026, 9, 21, 0, 0, 0)
+
+
+def _normalise_zip(path: Path):
+    """Rewrite the archive with a fixed timestamp on every entry, content untouched.
+
+    ⚠️ `wb.properties.modified` is set here too, because openpyxl OVERWRITES it with the wall
+    clock inside save() -- setting it on the workbook object has no effect at all. That one
+    field is the reason two runs eleven seconds apart still differed after the zip entry times
+    were pinned, and it is invisible unless you diff the archive member by member.
+    """
+    import re
+    import zipfile
+    stamp = FIXED_TIME.strftime("%Y-%m-%dT%H:%M:%SZ")
+    with zipfile.ZipFile(path) as z:
+        entries = [(i, z.read(i.filename)) for i in z.infolist()]
+    with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
+        for info, data in entries:
+            if info.filename == "docProps/core.xml":
+                data = re.sub(rb"(<dcterms:modified[^>]*>)[^<]*(</dcterms:modified>)",
+                              rb"\g<1>" + stamp.encode() + rb"\g<2>", data)
+            new = zipfile.ZipInfo(info.filename, date_time=FIXED_ZIP_TIME)
+            new.compress_type = info.compress_type
+            new.external_attr = info.external_attr
+            z.writestr(new, data)
+
+
 def main():
     rng = random.Random(SEED)
     wb = Workbook()
@@ -272,7 +304,18 @@ def main():
     build_headcount(wb.create_sheet("Headcount"))
     build_notes(wb.create_sheet("Notes"))
 
+    # ⭐ BYTE-STABILITY. The sheet XML is already deterministic (seeded RNG), but openpyxl
+    # stamps docProps/core.xml with the wall clock at save time, so two identical runs
+    # produced two different files. Pinning created/modified makes `make data` a true no-op
+    # in git -- which matters because the README claims it, and a claim the repo disproves
+    # in one command is worse than no claim.
+    wb.properties.created = FIXED_TIME
+    wb.properties.modified = FIXED_TIME
+    wb.properties.creator = "make_dataset.py"
+    wb.properties.lastModifiedBy = "make_dataset.py"
+
     wb.save(OUT)
+    _normalise_zip(OUT)
     print(f"wrote {OUT}  ({OUT.stat().st_size / 1024:.0f} KB)")
     print(f"  sheets: {', '.join(wb.sheetnames)}")
     print(f"  Sales rows: {ws_sales.max_row - 1} (601 = 600 orders + 1 planted duplicate)")

@@ -6,10 +6,10 @@ file can't support an answer. Built for the Coreworks AI take-home.
 ```bash
 make setup      # venv + openpyxl + pytest
 make demo       # the five questions, end to end, with cell-level sources
-make test       # 31 tests — the two guarantees, asserted
+make test       # 32 tests — the two guarantees, asserted
 ```
 
-No API key needed to run it. No network. ~1,900 lines.
+No API key needed to run it. No network. ~2,750 lines including tests.
 
 ---
 
@@ -276,7 +276,7 @@ make quality                                 # what's wrong with the workbook
 make schema                                  # exactly what the planner sees — no data in it
 make report                                  # report.md
 make deck                                    # deck.txt
-make test                                    # 31 tests
+make test                                    # 32 tests
 
 python demo.py --ask "How many orders came through Marketplace in Q2 FY2025?"
 python demo.py --lineage "Sales!G9"          # what's in one cell, and what was done to it

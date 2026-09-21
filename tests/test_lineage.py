@@ -204,3 +204,29 @@ def test_a_refused_question_still_gets_a_slide(store):
     a = answer("What was our customer churn rate in FY2025?", store, CachedPlanner())
     deck = build([a])
     assert any(s.kind == "refusal" for s in deck)
+
+
+def test_the_workbook_regenerates_byte_identical(tmp_path):
+    """`make data` must be a no-op in git.
+
+    The README says the dataset regenerates byte-stable. It did not: openpyxl stamps
+    docProps/core.xml with the wall clock, so two identical runs produced two different files.
+    A claim the repo disproves in one command is worse than no claim, so the timestamps are
+    pinned and this test holds it.
+    """
+    import hashlib
+    import shutil
+    import subprocess
+    import sys as _sys
+
+    wb = ROOT / "data" / "acme_operating_review.xlsx"
+    before = hashlib.sha256(wb.read_bytes()).hexdigest()
+    backup = tmp_path / "backup.xlsx"
+    shutil.copy2(wb, backup)
+    try:
+        subprocess.run([_sys.executable, str(ROOT / "data" / "make_dataset.py")],
+                       check=True, capture_output=True)
+        after = hashlib.sha256(wb.read_bytes()).hexdigest()
+    finally:
+        shutil.copy2(backup, wb)
+    assert before == after, "regenerating the workbook changed its bytes"
