@@ -1,0 +1,7 @@
+# Everything the demo needs to RUN. Deliberately two lines.
+openpyxl>=3.1          # reading the workbook, twice: cached values and formulas
+pytest>=8.0            # the guarantees are tests, so the test runner is not optional
+
+# Optional — only for the LIVE planner. The demo runs end to end without it, replaying the
+# plans in plans/, which is why a reviewer can clone this and see it work with no key.
+# anthropic>=0.40

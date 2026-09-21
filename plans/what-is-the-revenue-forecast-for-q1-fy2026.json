@@ -1,0 +1,16 @@
+{
+  "question": "What is the revenue forecast for Q1 FY2026?",
+  "model": "claude-opus-5",
+  "recorded_by": "claude-opus-5 (Claude Code), following lineage/plan.py:SYSTEM verbatim against the schema card printed by `demo.py --explain`. NOT recorded through the Anthropic API on this machine \u2014 no key was present. Re-record with `python record_plans.py`.",
+  "plan": {
+    "table": "",
+    "joins": [],
+    "filters": [],
+    "group_by": [],
+    "select": [],
+    "order_by": null,
+    "descending": true,
+    "limit": null,
+    "abstain": "Q1 FY2026 begins after the last order in this workbook; the file contains recorded actuals only and no forecast, plan or projection column. Producing a number would mean modelling, not reading the data."
+  }
+}

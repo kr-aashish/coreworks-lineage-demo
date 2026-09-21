@@ -1,0 +1,16 @@
+{
+  "question": "What was our customer churn rate in FY2025?",
+  "model": "claude-opus-5",
+  "recorded_by": "claude-opus-5 (Claude Code), following lineage/plan.py:SYSTEM verbatim against the schema card printed by `demo.py --explain`. NOT recorded through the Anthropic API on this machine \u2014 no key was present. Re-record with `python record_plans.py`.",
+  "plan": {
+    "table": "",
+    "joins": [],
+    "filters": [],
+    "group_by": [],
+    "select": [],
+    "order_by": null,
+    "descending": true,
+    "limit": null,
+    "abstain": "This workbook has no churn, subscription, cancellation or retention column on any sheet \u2014 Sales records orders, not subscription state, so there is nothing from which a churn rate could be computed."
+  }
+}

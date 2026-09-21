@@ -1,0 +1,35 @@
+{
+  "question": "What was total net revenue by region in Q3 FY2025?",
+  "model": "claude-opus-5",
+  "recorded_by": "claude-opus-5 (Claude Code), following lineage/plan.py:SYSTEM verbatim against the schema card printed by `demo.py --explain`. NOT recorded through the Anthropic API on this machine \u2014 no key was present. Re-record with `python record_plans.py`.",
+  "plan": {
+    "table": "Sales",
+    "joins": [],
+    "filters": [
+      {
+        "column": "fiscal_year",
+        "op": "=",
+        "value": 2025
+      },
+      {
+        "column": "fiscal_quarter",
+        "op": "=",
+        "value": "Q3"
+      }
+    ],
+    "group_by": [
+      "region_norm"
+    ],
+    "select": [
+      {
+        "agg": "sum",
+        "column": "net_revenue_calc",
+        "alias": "net_revenue"
+      }
+    ],
+    "order_by": "net_revenue",
+    "descending": true,
+    "limit": null,
+    "abstain": null
+  }
+}

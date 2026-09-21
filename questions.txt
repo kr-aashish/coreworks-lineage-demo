@@ -1,0 +1,23 @@
+# The five representative questions. One per line; blank lines and # comments ignored.
+# Three are answerable and exercise a different pathology each; two are not answerable and
+# must be refused for two DIFFERENT reasons -- absent column, and out-of-scope task.
+
+# 1. aggregate + group + filter. Exercises the text-formatted prices (pathology 1) and the
+#    region casing variants (pathology 2): a naive GROUP BY returns 8+ regions, not 4.
+What was total net revenue by region in Q3 FY2025?
+
+# 2. join + derived metric. Margin does not exist in either sheet; it is derived from
+#    Sales.unit_price and Products.cost_price, and its provenance spans both.
+Which product had the highest average margin percentage in FY2025?
+
+# 3. the subtotal-row trap (pathology 6). A naive sum over Headcount double-counts the
+#    "Total" rows parked inside the data.
+What was the total fully loaded cost of the Engineering team across FY2025?
+
+# 4. REFUSED -- the quantity is not in the workbook at all. Churn lives in another system,
+#    and the Notes sheet says so in prose the system is not allowed to compute from.
+What was our customer churn rate in FY2025?
+
+# 5. REFUSED -- every input exists, but the task is a forecast. Nothing in the file is
+#    evidence for a future quarter.
+What is the revenue forecast for Q1 FY2026?

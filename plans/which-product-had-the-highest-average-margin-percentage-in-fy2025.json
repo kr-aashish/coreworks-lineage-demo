@@ -1,0 +1,36 @@
+{
+  "question": "Which product had the highest average margin percentage in FY2025?",
+  "model": "claude-opus-5",
+  "recorded_by": "claude-opus-5 (Claude Code), following lineage/plan.py:SYSTEM verbatim against the schema card printed by `demo.py --explain`. NOT recorded through the Anthropic API on this machine \u2014 no key was present. Re-record with `python record_plans.py`.",
+  "plan": {
+    "table": "Sales",
+    "joins": [
+      {
+        "table": "Products",
+        "left_on": "sku",
+        "right_on": "sku"
+      }
+    ],
+    "filters": [
+      {
+        "column": "fiscal_year",
+        "op": "=",
+        "value": 2025
+      }
+    ],
+    "group_by": [
+      "product_name_norm"
+    ],
+    "select": [
+      {
+        "agg": "avg",
+        "column": "margin_pct",
+        "alias": "avg_margin_pct"
+      }
+    ],
+    "order_by": "avg_margin_pct",
+    "descending": true,
+    "limit": 5,
+    "abstain": null
+  }
+}
